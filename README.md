@@ -17,3 +17,10 @@ When a user accesses the short link, it automatically redirects them to the orig
 🏗️ Architecture Overview
 
 User → HTML/JS Frontend → Spring Boot REST API → Redis Cache → Database
+
+ 🖼️ Screenshots
+
+https://github.com/shikhamittal16/URL_SHORTENER/blob/main/assets/originalUrl.png
+https://github.com/shikhamittal16/URL_SHORTENER/blob/main/assets/shortUrl.png
+
+
