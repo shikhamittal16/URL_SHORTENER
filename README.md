@@ -1,10 +1,12 @@
 # URL_SHORTENER
 
 A lightweight and fast **URL Shortener** built with **Spring Boot**, **HTML/CSS/JS**, and **Redis**.  
-It allows users to submit a long URL and get a short, shareable link in return.
+It allows users to submit a long URL and get a short, shareable link in return.  
 When a user accesses the short link, it automatically redirects them to the original long URL — with Redis caching to boost performance.
 
-🚀 Features
+---
+
+## 🚀 Features
 
 - ✂️ Shorten long URLs into unique, shareable short links  
 - 🔁 Instant redirection to the original URL  
@@ -13,13 +15,15 @@ When a user accesses the short link, it automatically redirects them to the orig
 - 🧾 RESTful API endpoints  
 - 🌐 Simple and clean web UI (HTML, CSS, JS)
 
-🏗️ Architecture Overview
+---
+
+## 🏗️ Architecture Overview
 
 User → HTML/JS Frontend → Spring Boot REST API → Redis Cache → Database
 
-🖼️ Screenshots
+---
 
-https://github.com/shikhamittal16/URL_SHORTENER/blob/main/assets/originalUrl.png
-https://github.com/shikhamittal16/URL_SHORTENER/blob/main/assets/shortUrl.png
+## 🖼️ Screenshots
 
-
+![Original URL](https://github.com/shikhamittal16/URL_SHORTENER/blob/main/assets/originalUrl.png)  
+![Short URL](https://github.com/shikhamittal16/URL_SHORTENER/blob/main/assets/shortUrl.png)
