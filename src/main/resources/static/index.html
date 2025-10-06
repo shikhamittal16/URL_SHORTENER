@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 50px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 25px 30px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            max-width: 480px;
+            width: 90%;
+        }
+        h1 {
+            font-weight: normal;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #444;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #6487a3;
+            box-shadow: 0 0 0 2px #c3d0e8;
+        }
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            background-color: #567d9b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.25s ease;
+        }
+        button:disabled {
+            background-color: #a9b9ca;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f2f5;
+            border-radius: 5px;
+            word-break: break-word;
+            color: #374151;
+        }
+        #error {
+            margin-top: 16px;
+            color: #b1534f;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Enter Short or Long URL</h1>
+    <input type="text" id="urlInput" placeholder="Paste short URL or long URL here" />
+    <button id="submitBtn" onclick="handleUrl()">Submit</button>
+
+    <div id="result" aria-live="polite"></div>
+    <div id="error" role="alert"></div>
+</div>
+
+<script>
+    async function handleUrl() {
+        const input = document.getElementById('urlInput');
+        const url = input.value.trim();
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+        const button = document.getElementById('submitBtn');
+
+        resultDiv.textContent = '';
+        errorDiv.textContent = '';
+
+        if (!url) {
+            errorDiv.textContent = 'Please enter a URL.';
+            return;
+        }
+
+        button.disabled = true;
+        try {
+            const response = await fetch('/api/resolve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            });
+
+            if (response.status === 404) {
+                throw new Error('URL not found.');
+            }
+            if (response.status === 410) {
+                throw new Error('URL has expired.');
+            }
+            if (!response.ok) {
+                throw new Error('Server error. Please try again.');
+            }
+
+            const data = await response.json();
+            if (data.shortUrl) {
+                resultDiv.innerHTML = `Short URL: <a href="${data.shortUrl}" target="_blank" rel="noopener">${data.shortUrl}</a>`;
+            } else if (data.originalUrl) {
+                resultDiv.innerHTML = `Original URL: <a href="${data.originalUrl}" target="_blank" rel="noopener">${data.originalUrl}</a>`;
+            } else if(data.originalUrlCached) {
+                resultDiv.innerHTML = `Original URL Cached: <a href="${data.originalUrlCached}" target="_blank" rel="noopener">${data.originalUrlCached}</a>`;
+            } else {
+                resultDiv.textContent = 'Unexpected response from server.';
+            }
+            input.value = '';
+        } catch (error) {
+            errorDiv.textContent = error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>
